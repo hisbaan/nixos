@@ -1,11 +1,15 @@
-{ config, pkgs, ... }:
+{ config, inputs, pkgs, pkgs-unstable, ... }:
 
-let
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-in {
+{
   imports = [
     ./hardware-configuration.nix
   ];
+
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes"];
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+  };
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -31,7 +35,13 @@ in {
   # TODO setup firewall
   networking.firewall.enable = false;
 
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      X11Forwarding = true;
+      PermitRootLogin = "no";
+    };
+  };
   programs.wavemon.enable = true;
 
   #############
@@ -71,11 +81,13 @@ in {
 
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = false;
-    powerManagement.finegrained = false;
+    powerManagement = {
+      enable = false;
+      finegrained = false;
+    };
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
   ########
@@ -87,9 +99,11 @@ in {
   services.xserver.displayManager.startx.enable = true;
   services.xserver.windowManager.bspwm.enable = true;
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-    videoDrivers = [ "nvidia" ];
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+    videoDrivers = [ "nvidia" "nvidia-dkms" ];
   };
 
   ############
@@ -97,21 +111,27 @@ in {
   ############
 
   programs.hyprland = {
-    package = unstable.hyprland;
+    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    portalPackage = pkgs.xdg-desktop-portal-hyprland;
     enable = true;
     xwayland.enable = true;
   };
+
+  programs.hyprlock.enable = true;
+  services.hypridle.enable = true;
 
   hardware.opengl = {
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
+    extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+    extraPackages32 = with pkgs.pkgsi686Linux; [ nvidia-vaapi-driver ];
   };
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
+  # xdg.portal = {
+  #   enable = true;
+  #   extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
+  # };
 
   ################
   # Localization #
@@ -188,14 +208,19 @@ in {
       zone = "hisbaan.com";
       username = "token";
       passwordFile = "/home/hisbaan/services/secrets/ddclient";
-      domains = [ "ddns.hisbaan.com" ];
+      domains = [
+        "ddns.hisbaan.com"
+        "jellyfin.hisbaan.com"
+        "nextcloud.hisbaan.com"
+        "photos.hisbaan.com"
+      ];
     };
     printing = {
       enable = true;
     };
     avahi = {
       enable = true;
-      nssmdns = true;
+      nssmdns4 = true;
       openFirewall = true;
     };
   };
@@ -214,6 +239,13 @@ in {
   # Packages #
   ############
 
+  programs.nh = {
+    enable = true;
+    clean.enable = false;
+    clean.extraArgs = "--keey-since 4d --keep 3";
+    flake = "/home/hisbaan/nixos/lab";
+  };
+
   programs.firefox = {
     enable = true;
     nativeMessagingHosts.packages = [ pkgs.tridactyl-native ];
@@ -228,16 +260,16 @@ in {
     dedicatedServer.openFirewall = true;
     package = pkgs.steam.override {
       extraPkgs = pkgs: with pkgs; [
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXinerama
-        xorg.libXScrnSaver
+        keyutils
+        libkrb5
         libpng
         libpulseaudio
         libvorbis
         stdenv.cc.cc.lib
-        libkrb5
-        keyutils
+        xorg.libXScrnSaver
+        xorg.libXcursor
+        xorg.libXi
+        xorg.libXinerama
       ];
     };
   };
@@ -255,22 +287,31 @@ in {
     btop
     cloc
     delta
+    didyoumean
     du-dust
     exfatprogs
     eza
     fd
+    ffmpeg
     fzf
     htop
+    jq
     killall
     neofetch
-    nvtop-nvidia
+    nix-output-monitor
+    nvtopPackages.nvidia
     pdftk
+    pgcli
+    # pkgs-unstable.trashy # TODO figure out git package
     progress
     ripgrep
     rsync
     s-tui
-    # unstable.trashy # TODO figure out git package
+    tcpdump
     unzip
+    usbutils
+    wget
+    yazi
     zip
 
     # dev
@@ -285,7 +326,10 @@ in {
     neovim
     nodePackages.pnpm
     nodejs
+    openssl
+    postgresql
     rustup
+    smartmontools
     vscode
 
     # tex
@@ -295,22 +339,27 @@ in {
     })
 
     # apps
+    cinnamon.nemo
+    darktable
+    digikam
     discord
     dunst
-    # firefox
     flameshot
+    freecad
     gimp
     imv
+    mpv
     obs-studio
+    piper
     scrcpy
+    solaar
     spotify
     webcord
     zathura
-    cinnamon.nemo
 
     # terminals
-    unstable.alacritty
     kitty
+    pkgs-unstable.alacritty
     wezterm
 
     # system
@@ -320,34 +369,32 @@ in {
 
     # wayland
     grimblast
-    swappy
-    unstable.hypridle
-    unstable.hyprlock
     # hyprsome
     libnotify
+    pkgs-unstable.waybar
+    swappy
     swaybg
     tofi
-    unstable.waybar
     wl-clipboard
 
     # xorg
     nitrogen
+    picom
     polybar
     rofi
     sxhkd
     xclip
-    picom
 
     # icons/themes
     capitaine-cursors
     gnome.adwaita-icon-theme
 
     # misc
-    pavucontrol
     blueberry
-    unstable.wineWowPackages.stable
-    unstable.winetricks
-    unstable.protontricks
+    pavucontrol
+    pkgs-unstable.protontricks
+    pkgs-unstable.wineWowPackages.stable
+    pkgs-unstable.winetricks
   ];
 
   environment.etc."current-system-packages".text =
