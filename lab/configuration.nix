@@ -1,4 +1,4 @@
-{ config, inputs, pkgs, pkgs-unstable, ... }:
+{ config, inputs, pkgs, pkgs-unstable, lib, ... }:
 
 {
   imports = [
@@ -11,12 +11,22 @@
     trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
+  ##############
+  # Bootloader #
+  ##############
+
+  boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot.consoleMode = "max";
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/etc/secureboot";
+  };
 
-  # Polkit
+  ##########
+  # Polkit #
+  ##########
+
   security.polkit.enable = true;
 
   ##############
@@ -30,6 +40,8 @@
   networking.hosts = {
     "192.168.1.11" = [ "archen" ];
     "192.168.1.12" = [ "mini" ];
+    "192.168.1.13" = [ "cocoflo" ];
+    "192.168.1.14" = [ "knulli" ];
   };
 
   # TODO setup firewall
@@ -175,6 +187,8 @@
       "networkmanager"
       "wheel"
       "power"
+      "scanner"
+      "lp"
     ];
     packages = with pkgs; [];
   };
@@ -197,6 +211,7 @@
   services = {
     syncthing = {
       enable = true;
+      openDefaultPorts = true;
       user = "hisbaan";
       dataDir = "/home/hisbaan/Documents";
       configDir = "/home/hisbaan/.config/syncthing";
@@ -217,11 +232,28 @@
     };
     printing = {
       enable = true;
+      drivers = [ pkgs.brlaser ];
     };
     avahi = {
       enable = true;
       nssmdns4 = true;
       openFirewall = true;
+    };
+  };
+
+  hardware = {
+    sane = {
+      enable = true;
+      brscan5 = {
+        enable = true;
+        netDevices = {
+          brother = {
+            ip = "192.168.1.230";
+            model = "DCP-L2520DW";
+            # nodename = "BRW54137906D95E";
+          };
+        };
+      };
     };
   };
 
@@ -232,7 +264,10 @@
   programs.kdeconnect.enable = true;
 
   # docker
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    liveRestore = false;
+  };
   users.extraGroups.docker.members = [ "hisbaan" ];
 
   ############
@@ -290,6 +325,7 @@
     didyoumean
     du-dust
     exfatprogs
+    exiftool
     eza
     fd
     ffmpeg
@@ -297,17 +333,21 @@
     htop
     jq
     killall
+    kopia
     neofetch
     nix-output-monitor
     nvtopPackages.nvidia
+    p7zip
     pdftk
     pgcli
-    # pkgs-unstable.trashy # TODO figure out git package
     progress
     ripgrep
     rsync
     s-tui
+    sbctl
     tcpdump
+    # pkgs-unstable.trashy # TODO figure out git package
+    unrar-wrapper
     unzip
     usbutils
     wget
@@ -338,20 +378,23 @@
       inherit (pkgs.texlive) scheme-minimal latex-bin latexmk fontspec;
     })
 
-    # apps
+    # applications
     cinnamon.nemo
     darktable
+    davinci-resolve
     digikam
     discord
     dunst
     flameshot
     freecad
     gimp
+    gnome.nautilus
     imv
     mpv
     obs-studio
     piper
     scrcpy
+    simple-scan
     solaar
     spotify
     webcord
@@ -365,6 +408,7 @@
     # system
     efibootmgr
     polkit_gnome
+    pulseaudio
     shared-mime-info
 
     # wayland
