@@ -29,6 +29,15 @@
 
   security.polkit.enable = true;
 
+  security.wrappers = {
+    kopia = {
+     capabilities = "cap_dac_read_search=+ep";
+      owner = "root";
+      group = "root";
+      source = "${pkgs.kopia}/bin/kopia";
+    };
+  };
+
   ##############
   # Networking #
   ##############
@@ -55,6 +64,29 @@
     };
   };
   programs.wavemon.enable = true;
+
+  ##########
+  # Timers #
+  ##########
+
+  systemd.timers.backup = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "04:00";
+      Persistent = true;
+      AccuracySec = "5min";
+    };
+  };
+
+  systemd.services.backup = {
+    script = ''
+      /run/wrappers/bin/kopia snapshot create /mnt/nas
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "hisbaan";
+    };
+  };
 
   #############
   # Bluetooth #
@@ -199,9 +231,10 @@
   # environment variables
   environment.variables = {
     EDITOR = "nvim";
-    ZDOTDIR = "/home/hisbaan/.config/zsh/";
-    WLR_NO_HARDWARE_CURSORS = "1";
+    KOPIA_CHECK_FOR_UPDATES = "false";
     NIXOS_OZONE_WL = "1";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    ZDOTDIR = "/home/hisbaan/.config/zsh/";
   };
 
   ############
