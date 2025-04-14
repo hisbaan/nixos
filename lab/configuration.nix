@@ -151,6 +151,17 @@
   };
 
   ############
+  # libinput #
+  ############
+
+  services.libinput = {
+    mouse = {
+      accelProfile = "flat";
+      accelSpeed = "-0.25";
+    };
+  };
+
+  ############
   # Hyprland #
   ############
 
@@ -379,6 +390,7 @@
     s-tui
     sbctl
     tcpdump
+    tmux
     # pkgs-unstable.trashy # TODO figure out git package
     unrar-wrapper
     unzip
@@ -396,7 +408,7 @@
     git
     gnumake
     lua
-    neovim
+    pkgs-unstable.neovim
     nodePackages.pnpm
     nodejs
     openssl
