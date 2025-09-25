@@ -8,6 +8,7 @@
   nix.settings = {
     experimental-features = [ "nix-command" "flakes"];
     substituters = ["https://hyprland.cachix.org"];
+    trusted-substituters = ["https://hyprland.cachix.org"];
     trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
@@ -241,6 +242,7 @@
   # environment variables
   environment.variables = {
     EDITOR = "nvim";
+    FLAKE = "/home/hisbaan/nixos/lab";
     KOPIA_CHECK_FOR_UPDATES = "false";
     NIXOS_OZONE_WL = "1";
     WLR_NO_HARDWARE_CURSORS = "1";
@@ -319,8 +321,8 @@
 
   programs.nh = {
     enable = true;
-    clean.enable = false;
-    clean.extraArgs = "--keey-since 4d --keep 3";
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
     flake = "/home/hisbaan/nixos/lab";
   };
 
@@ -373,6 +375,7 @@
     fd
     ffmpeg
     fzf
+    gnupg
     htop
     jq
     killall
@@ -437,6 +440,7 @@
     mpv
     obs-studio
     piper
+    pkgs-unstable.rbw
     scrcpy
     simple-scan
     solaar
@@ -480,6 +484,7 @@
     # misc
     blueberry
     pavucontrol
+    pinentry-curses
     pkgs-unstable.protontricks
     pkgs-unstable.wineWowPackages.stable
     pkgs-unstable.winetricks
