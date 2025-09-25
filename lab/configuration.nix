@@ -42,15 +42,14 @@
   # Networking #
   ##############
 
-  networking.wireless.iwd.enable = true;
   networking.hostName = "lab";
 
   # /etc/hosts
   networking.hosts = {
-    "192.168.1.11" = [ "archen" ];
-    "192.168.1.12" = [ "mini" ];
-    "192.168.1.13" = [ "cocoflo" ];
-    "192.168.1.14" = [ "knulli" ];
+    "192.168.2.11" = [ "archen" ];
+    "192.168.2.12" = [ "mini" ];
+    "192.168.2.13" = [ "cocoflo" ];
+    "192.168.2.14" = [ "knulli" ];
   };
 
   # TODO setup firewall
@@ -268,10 +267,10 @@
       username = "token";
       passwordFile = "/home/hisbaan/services/secrets/ddclient";
       domains = [
+        "ant.hisbaan.com"
         "ddns.hisbaan.com"
         "jellyfin.hisbaan.com"
         "nextcloud.hisbaan.com"
-        "photos.hisbaan.com"
       ];
     };
     printing = {
