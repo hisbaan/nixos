@@ -17,7 +17,7 @@
   ##############
 
   boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.loader.systemd-boot.consoleMode = "max";
   boot.lanzaboote = {
     enable = true;
@@ -110,7 +110,6 @@
   # Audio #
   #########
 
-  sound.enable = true;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -138,11 +137,11 @@
   # Xorg #
   ########
 
-  services.xserver.enable = true;
-  services.xserver.autorun = true;
-  services.xserver.displayManager.startx.enable = true;
-  services.xserver.windowManager.bspwm.enable = true;
   services.xserver = {
+    enable = true;
+    autorun = true;
+    displayManager.startx.enable = true;
+    windowManager.bspwm.enable = true;
     xkb = {
       layout = "us";
       variant = "";
@@ -175,10 +174,8 @@
   programs.hyprlock.enable = true;
   services.hypridle.enable = true;
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
     extraPackages = with pkgs; [ nvidia-vaapi-driver ];
     extraPackages32 = with pkgs.pkgsi686Linux; [ nvidia-vaapi-driver ];
   };
@@ -233,7 +230,7 @@
       "scanner"
       "lp"
     ];
-    packages = with pkgs; [];
+    # packages = with pkgs; [];
   };
 
   # Enable automatic login for the user.
@@ -243,10 +240,15 @@
   environment.variables = {
     EDITOR = "nvim";
     FLAKE = "/home/hisbaan/nixos/lab";
+    NH_FLAKE = "/home/hisbaan/nixos/lab";
     KOPIA_CHECK_FOR_UPDATES = "false";
     NIXOS_OZONE_WL = "1";
     WLR_NO_HARDWARE_CURSORS = "1";
     ZDOTDIR = "/home/hisbaan/.config/zsh/";
+    GBM_BACKEND = "nvidia-drm";
+    LIBVA_DRIVER_NAME = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    XDG_SESSION_TYPE = "x11";
   };
 
   ############
@@ -263,7 +265,7 @@
     };
     ddclient = {
       enable = true;
-      use = "web, web='https://cloudflare.com/cdn-cgi/trace', web-skip='ip='";
+      usev4 = "web, web='https://cloudflare.com/cdn-cgi/trace', web-skip='ip='";
       protocol = "cloudflare";
       zone = "hisbaan.com";
       username = "token";
@@ -293,7 +295,7 @@
         enable = true;
         netDevices = {
           brother = {
-            ip = "192.168.1.230";
+            ip = "192.168.2.35";
             model = "DCP-L2520DW";
             # nodename = "BRW54137906D95E";
           };
@@ -333,6 +335,7 @@
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
 
   programs.steam = {
     enable = true;
@@ -357,7 +360,8 @@
 
   fonts.packages = with pkgs; [
     meslo-lg
-    (nerdfonts.override { fonts = ["Meslo"]; })
+    nerd-fonts.meslo-lg
+    # (nerdfonts.override { fonts = ["Meslo"]; })
   ];
 
   # List packages installed in system profile. To search, run: $ nix search wget
@@ -381,6 +385,7 @@
     killall
     kopia
     neofetch
+    nh
     nix-output-monitor
     nvtopPackages.nvidia
     p7zip
@@ -426,7 +431,7 @@
     })
 
     # applications
-    cinnamon.nemo
+    nemo
     darktable
     davinci-resolve
     digikam
@@ -435,7 +440,7 @@
     flameshot
     freecad
     gimp
-    gnome.nautilus
+    nautilus
     imv
     mpv
     obs-studio
@@ -452,6 +457,26 @@
     kitty
     pkgs-unstable.alacritty
     wezterm
+
+    # language servers
+    bash-language-server
+    clang-tools
+    emmet-language-server
+    intelephense
+    jdt-language-server
+    ltex-ls
+    lua-language-server
+    nil
+    prettierd
+    pyright
+    rust-analyzer-unwrapped
+    stylua
+    tailwindcss-language-server
+    taplo
+    typescript-language-server
+    yaml-language-server
+    yamlfmt
+    zls
 
     # system
     efibootmgr
@@ -479,7 +504,7 @@
 
     # icons/themes
     capitaine-cursors
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
 
     # misc
     blueberry
