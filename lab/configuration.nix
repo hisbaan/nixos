@@ -51,10 +51,14 @@
     "192.168.2.12" = [ "mini" ];
     "192.168.2.13" = [ "cocoflo" ];
     "192.168.2.14" = [ "knulli" ];
+    "192.168.2.18" = [ "kobo" ];
   };
 
   # TODO setup firewall
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = false;
+    allowedTCPPorts = [ 22 80 81 443 8080 8384 ];
+  };
 
   services.openssh = {
     enable = true;
@@ -224,11 +228,12 @@
     isNormalUser = true;
     description = "Hisbaan Noorani";
     extraGroups = [
+      "dialout"
+      "lp"
       "networkmanager"
-      "wheel"
       "power"
       "scanner"
-      "lp"
+      "wheel"
     ];
     # packages = with pkgs; [];
   };
@@ -258,6 +263,7 @@
   services = {
     syncthing = {
       enable = true;
+      guiAddress = "0.0.0.0:8384";
       openDefaultPorts = true;
       user = "hisbaan";
       dataDir = "/home/hisbaan/Documents";
@@ -265,7 +271,8 @@
     };
     ddclient = {
       enable = true;
-      usev4 = "web, web='https://cloudflare.com/cdn-cgi/trace', web-skip='ip='";
+      usev4 = "webv4, webv4='https://cloudflare.com/cdn-cgi/trace', webv4-skip='ip='";
+      usev6 = "";
       protocol = "cloudflare";
       zone = "hisbaan.com";
       username = "token";
@@ -273,6 +280,7 @@
       domains = [
         "ant.hisbaan.com"
         "ddns.hisbaan.com"
+        "home.hisbaan.com"
         "jellyfin.hisbaan.com"
         "nextcloud.hisbaan.com"
       ];
