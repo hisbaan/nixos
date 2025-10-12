@@ -406,7 +406,7 @@
     sbctl
     tcpdump
     tmux
-    # pkgs-unstable.trashy # TODO figure out git package
+    gtrash
     unrar-wrapper
     unzip
     usbutils
@@ -415,9 +415,11 @@
     zip
 
     # dev
+    android-tools
     binutils
     cmake
     direnv
+    esphome
     gcc
     gdb
     git
@@ -434,9 +436,7 @@
 
     # tex
     biber
-    (pkgs.texlive.combine {
-      inherit (pkgs.texlive) scheme-minimal latex-bin latexmk fontspec;
-    })
+    texlive.combined.scheme-full
 
     # applications
     nemo
@@ -469,6 +469,7 @@
     # language servers
     bash-language-server
     clang-tools
+    docker-compose-language-service
     emmet-language-server
     intelephense
     jdt-language-server
