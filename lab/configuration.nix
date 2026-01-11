@@ -12,6 +12,12 @@
     trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
   };
 
+  ##################
+  # Kernel Modules #
+  ##################
+
+  boot.kernelModules = [ "ip_tables" "iptable_nat" "iptable_filter" ];
+
   ##############
   # Bootloader #
   ##############
