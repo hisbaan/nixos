@@ -184,7 +184,7 @@
   ############
 
   programs.hyprland = {
-    package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     portalPackage = pkgs.xdg-desktop-portal-hyprland;
     enable = true;
     xwayland.enable = true;
@@ -250,7 +250,6 @@
       "scanner"
       "wheel"
     ];
-    # packages = with pkgs; [];
   };
 
   # Enable automatic login for the user.
@@ -390,9 +389,11 @@
     bluetuith
     btop
     cloc
+    clipse
     delta
     didyoumean
-    du-dust
+    dust
+    ergogen
     exfatprogs
     exiftool
     eza
@@ -404,6 +405,7 @@
     jq
     killall
     kopia
+    miller
     neofetch
     nh
     nix-output-monitor
@@ -417,6 +419,7 @@
     s-tui
     sbctl
     tcpdump
+    topiary
     tmux
     gtrash
     unrar-wrapper
@@ -429,6 +432,7 @@
     # dev
     android-tools
     binutils
+    chezmoi
     cmake
     direnv
     esphome
@@ -442,8 +446,10 @@
     nodejs
     openssl
     postgresql
+    python3
     rustup
     smartmontools
+    uv
     vscode
 
     # tex
@@ -451,19 +457,22 @@
     texlive.combined.scheme-full
 
     # applications
-    nemo
     darktable
     davinci-resolve
     digikam
     discord
+    vesktop
     dunst
     flameshot
     freecad
     gimp
-    nautilus
     imv
+    kicad
     mpv
+    nautilus
+    nemo
     obs-studio
+    pkgs-unstable.openscad-unstable
     piper
     pkgs-unstable.rbw
     scrcpy
@@ -488,6 +497,7 @@
     ltex-ls
     lua-language-server
     nil
+    openscad-lsp
     prettierd
     pyright
     rust-analyzer-unwrapped
@@ -514,6 +524,7 @@
     swaybg
     tofi
     wl-clipboard
+    wl-clip-persist
 
     # xorg
     nitrogen
@@ -526,6 +537,7 @@
     # icons/themes
     capitaine-cursors
     adwaita-icon-theme
+    lxappearance
 
     # misc
     blueberry
