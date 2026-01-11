@@ -293,11 +293,7 @@
       username = "token";
       passwordFile = "/home/hisbaan/services/secrets/ddclient";
       domains = [
-        "ant.hisbaan.com"
-        "ddns.hisbaan.com"
-        "home.hisbaan.com"
-        "jellyfin.hisbaan.com"
-        "nextcloud.hisbaan.com"
+        "ip.hisbaan.com"
       ];
     };
     printing = {
