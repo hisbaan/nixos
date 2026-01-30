@@ -71,6 +71,7 @@
     settings = {
       X11Forwarding = true;
       PermitRootLogin = "no";
+      PasswordAuthentication = false;
     };
   };
   programs.wavemon.enable = true;
@@ -135,6 +136,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    wireplumber.enable = true;
   };
 
   ##########
@@ -198,11 +200,6 @@
     extraPackages = with pkgs; [ nvidia-vaapi-driver ];
     extraPackages32 = with pkgs.pkgsi686Linux; [ nvidia-vaapi-driver ];
   };
-
-  # xdg.portal = {
-  #   enable = true;
-  #   extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
-  # };
 
   ################
   # Localization #
@@ -385,6 +382,7 @@
   # List packages installed in system profile. To search, run: $ nix search wget
   environment.systemPackages = with pkgs; [
     # cli/utils
+    arp-scan
     bat
     bluetuith
     btop
@@ -418,6 +416,7 @@
     rsync
     s-tui
     sbctl
+    starship
     tcpdump
     topiary
     tmux
@@ -435,11 +434,11 @@
     chezmoi
     cmake
     direnv
-    esphome
     gcc
     gdb
     git
     gnumake
+    go
     lua
     pkgs-unstable.neovim
     nodePackages.pnpm
@@ -481,11 +480,13 @@
     spotify
     webcord
     zathura
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # terminals
     kitty
     pkgs-unstable.alacritty
     wezterm
+    ghostty
 
     # language servers
     bash-language-server
