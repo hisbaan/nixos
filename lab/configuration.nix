@@ -171,17 +171,6 @@
   };
 
   ############
-  # libinput #
-  ############
-
-  services.libinput = {
-    mouse = {
-      accelProfile = "flat";
-      accelSpeed = "-0.25";
-    };
-  };
-
-  ############
   # Hyprland #
   ############
 
