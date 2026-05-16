@@ -292,21 +292,21 @@
     };
   };
 
-  hardware = {
-    sane = {
-      enable = true;
-      brscan5 = {
-        enable = true;
-        netDevices = {
-          brother = {
-            ip = "192.168.2.35";
-            model = "DCP-L2520DW";
-            # nodename = "BRW54137906D95E";
-          };
-        };
-      };
-    };
-  };
+  # hardware = {
+  #   sane = {
+  #     enable = true;
+  #     brscan5 = {
+  #       enable = true;
+  #       netDevices = {
+  #         brother = {
+  #           ip = "192.168.2.35";
+  #           model = "DCP-L2520DW";
+  #           # nodename = "BRW54137906D95E";
+  #         };
+  #       };
+  #     };
+  #   };
+  # };
 
   services.gvfs.enable = true;
 
