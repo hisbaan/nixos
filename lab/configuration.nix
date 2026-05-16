@@ -18,6 +18,10 @@
 
   boot.kernelModules = [ "ip_tables" "iptable_nat" "iptable_filter" ];
 
+  # prevent copy fail vulnerability
+  boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
+  boot.extraModprobeConfig = "install algif_aead /bin/false";
+
   ##############
   # Bootloader #
   ##############
