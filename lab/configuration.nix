@@ -53,17 +53,17 @@
 
   # /etc/hosts
   networking.hosts = {
-    "192.168.2.11" = [ "archen" ];
-    "192.168.2.12" = [ "mini" ];
-    "192.168.2.13" = [ "cocoflo" ];
-    "192.168.2.14" = [ "knulli" ];
-    "192.168.2.18" = [ "kobo" ];
+    "192.168.18.3" = [ "archen" ];
+    "192.168.18.4" = [ "mini" ];
+    # "192.168.2.13" = [ "cocoflo" ];
+    # "192.168.2.14" = [ "knulli" ];
+    # "192.168.2.18" = [ "kobo" ];
   };
 
   # TODO setup firewall
   networking.firewall = {
     enable = false;
-    allowedTCPPorts = [ 22 80 81 443 8080 8384 ];
+    allowedTCPPorts = [ 22 80 81 443 4096 8080 8384 ];
   };
 
   services.openssh = {
