@@ -396,6 +396,7 @@
     jq
     killall
     kopia
+    ldns
     miller
     neofetch
     nh
@@ -424,6 +425,7 @@
     # dev
     android-tools
     binutils
+    bun
     chezmoi
     cmake
     direnv
@@ -433,16 +435,18 @@
     gnumake
     go
     lua
-    pkgs-unstable.neovim
     nodePackages.pnpm
     nodejs
     openssl
+    pkgs-unstable.neovim
     postgresql
     python3
     rustup
     smartmontools
     uv
     vscode
+    yaak
+    zellij
 
     # tex
     biber
@@ -465,8 +469,9 @@
     nemo
     obs-studio
     pkgs-unstable.openscad-unstable
-    piper
     pkgs-unstable.rbw
+    piper
+    protonup-ng
     scrcpy
     simple-scan
     solaar
@@ -500,6 +505,7 @@
     tailwindcss-language-server
     taplo
     typescript-language-server
+    pkgs-unstable.typescript-go
     yaml-language-server
     yamlfmt
     zls
