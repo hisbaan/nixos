@@ -158,21 +158,21 @@
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
-  ########
-  # Xorg #
-  ########
-
-  services.xserver = {
-    enable = true;
-    autorun = true;
-    displayManager.startx.enable = true;
-    windowManager.bspwm.enable = true;
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-    videoDrivers = [ "nvidia" "nvidia-dkms" ];
-  };
+  # ########
+  # # Xorg #
+  # ########
+  #
+  # services.xserver = {
+  #   enable = true;
+  #   autorun = true;
+  #   displayManager.startx.enable = true;
+  #   windowManager.bspwm.enable = true;
+  #   xkb = {
+  #     layout = "us";
+  #     variant = "";
+  #   };
+  #   videoDrivers = [ "nvidia" "nvidia-dkms" ];
+  # };
 
   ############
   # Hyprland #
@@ -257,7 +257,7 @@
     GBM_BACKEND = "nvidia-drm";
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    XDG_SESSION_TYPE = "x11";
+    XDG_SESSION_TYPE = "wayland";
   };
 
   ############
@@ -357,10 +357,10 @@
         libpulseaudio
         libvorbis
         stdenv.cc.cc.lib
-        xorg.libXScrnSaver
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXinerama
+        libxscrnsaver
+        libxcursor
+        libxi
+        libxinerama
       ];
     };
   };
@@ -398,7 +398,7 @@
     kopia
     ldns
     miller
-    neofetch
+    fastfetch
     nh
     nix-output-monitor
     nvtopPackages.nvidia
@@ -435,7 +435,7 @@
     gnumake
     go
     lua
-    nodePackages.pnpm
+    pnpm
     nodejs
     openssl
     pkgs-unstable.neovim
@@ -541,7 +541,7 @@
     lxappearance
 
     # misc
-    blueberry
+    blueman
     pavucontrol
     pinentry-curses
     pkgs-unstable.protontricks
