@@ -147,6 +147,8 @@
   # Nvidia #
   ##########
 
+  services.xserver.videoDrivers = [ "nvidia" "nvidia-dkms" ];
+
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement = {
@@ -155,24 +157,8 @@
     };
     open = false;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
-
-  # ########
-  # # Xorg #
-  # ########
-  #
-  # services.xserver = {
-  #   enable = true;
-  #   autorun = true;
-  #   displayManager.startx.enable = true;
-  #   windowManager.bspwm.enable = true;
-  #   xkb = {
-  #     layout = "us";
-  #     variant = "";
-  #   };
-  #   videoDrivers = [ "nvidia" "nvidia-dkms" ];
-  # };
 
   ############
   # Hyprland #
