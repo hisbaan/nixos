@@ -537,8 +537,8 @@ in
         name = "fhs";
         targetPkgs = pkgs:
           (base.targetPkgs pkgs) ++ (with pkgs; [
-            bambu-studio
-            orca-slicer
+            # bambu-studio
+            # orca-slicer
           ]);
         profile = "export FHS=1";
         runScript = "zsh";
