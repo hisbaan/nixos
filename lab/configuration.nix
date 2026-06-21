@@ -72,6 +72,7 @@ in
   networking.firewall = {
     enable = false;
     allowedTCPPorts = [ 22 80 81 443 4096 8080 8384 ];
+    allowedUDPPorts = [ 5000 ];
   };
 
   services.openssh = {
