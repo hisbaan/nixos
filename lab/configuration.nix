@@ -83,6 +83,8 @@ in
       PasswordAuthentication = false;
     };
   };
+
+  programs.mosh.enable = true;
   programs.wavemon.enable = true;
 
   ##########
