@@ -1,5 +1,9 @@
 { config, inputs, pkgs, pkgs-unstable, lib, ... }:
 
+let
+  nub = pkgs.callPackage ./packages/nub.nix { };
+in
+
 {
   imports = [
     ./hardware-configuration.nix
@@ -423,6 +427,7 @@
     lua
     pnpm
     nodejs
+    nub
     openssl
     pkgs-unstable.neovim
     postgresql
