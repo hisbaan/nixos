@@ -431,6 +431,7 @@ in
     pnpm
     nodejs
     nub
+    pkgs-unstable.opencode
     openssl
     pkgs-unstable.neovim
     postgresql
