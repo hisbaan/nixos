@@ -85,6 +85,16 @@ in
   };
 
   programs.mosh.enable = true;
+
+  services.fail2ban = {
+    enable = true;
+    maxretry = 3;
+    ignoreIP = [
+      "192.168.0.0/16"
+    ];
+    bantime = "24h";
+  };
+
   programs.wavemon.enable = true;
 
   ##########
