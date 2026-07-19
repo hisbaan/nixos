@@ -318,6 +318,18 @@ in
   };
   users.extraGroups.docker.members = [ "hisbaan" ];
 
+  ##########
+  # nix-ld #
+  ##########
+
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+    ];
+  };
+
   ############
   # Packages #
   ############
