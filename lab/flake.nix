@@ -15,6 +15,14 @@
       url = "github:schembriaiden/helium-browser-nix-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nub = {
+      url = "github:nubjs/nub";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, lanzaboote, ... }: {
     nixosConfigurations.lab = nixpkgs.lib.nixosSystem {

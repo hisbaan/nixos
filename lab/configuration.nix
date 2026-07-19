@@ -1,7 +1,10 @@
 { config, inputs, pkgs, pkgs-unstable, lib, ... }:
 
 let
-  nub = pkgs.callPackage ./packages/nub.nix { };
+  claude-code = inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+  nub = inputs.nub.packages.${pkgs.stdenv.hostPlatform.system}.nub;
+  helium = inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 
 {
@@ -11,9 +14,18 @@ in
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes"];
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    substituters = [
+      "https://hyprland.cachix.org"
+      "https://claude-code.cachix.org"
+    ];
+    trusted-substituters = [
+      "https://hyprland.cachix.org"
+      "https://claude-code.cachix.org"
+    ];
+    trusted-public-keys = [
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+    ];
   };
 
   ##################
@@ -432,6 +444,7 @@ in
     binutils
     bun
     chezmoi
+    claude-code
     cmake
     direnv
     gcc
@@ -469,6 +482,7 @@ in
     flameshot
     freecad
     gimp
+    helium
     imv
     kicad
     mpv
@@ -485,8 +499,7 @@ in
     spotify
     webcord
     zathura
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
-    inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default
+    zen
 
     # terminals
     kitty
