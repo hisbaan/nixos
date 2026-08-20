@@ -82,7 +82,7 @@ in
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 81 443 4096 8080 8384 ];
+    allowedTCPPorts = [ 22 80 81 443 4096 8080 8123 8384 11000 ];
     allowedUDPPorts = [ 5000 ];
   };
 
