@@ -244,6 +244,7 @@ in
       "power"
       "scanner"
       "wheel"
+      "input"
     ];
   };
 
@@ -264,6 +265,12 @@ in
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     XDG_SESSION_TYPE = "wayland";
   };
+
+  ########
+  # UDEV #
+  ########
+
+  hardware.logitech.wireless.enable = true;
 
   ############
   # Services #
