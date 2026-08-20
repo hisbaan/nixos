@@ -440,6 +440,7 @@ in
     zip
 
     # dev
+    atlas
     android-tools
     binutils
     bun
@@ -458,11 +459,13 @@ in
     nub
     pkgs-unstable.opencode
     openssl
+    overmind
     pkgs-unstable.neovim
     postgresql
     python3
     rustup
     smartmontools
+    tree-sitter
     uv
     vscode
     yaak
@@ -520,7 +523,7 @@ in
     openscad-lsp
     prettierd
     pyright
-    rust-analyzer-unwrapped
+    (lib.hiPrio rust-analyzer-unwrapped)
     stylua
     tailwindcss-language-server
     taplo
