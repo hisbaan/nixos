@@ -264,6 +264,7 @@ in
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     XDG_SESSION_TYPE = "wayland";
+    PROTON_ENABLE_WAYLAND = 1;
   };
 
   ########
