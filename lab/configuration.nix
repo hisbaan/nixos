@@ -32,7 +32,13 @@ in
   # Kernel Modules #
   ##################
 
-  boot.kernelModules = [ "ip_tables" "iptable_nat" "iptable_filter" ];
+  boot.kernelModules = [
+    "ip_tables"
+    "iptable_nat"
+    "iptable_filter"
+    # intel igpu for jellyfin transcoding
+    "i915"
+  ];
 
   # early KMS for amdgpu
   boot.initrd.kernelModules = [ "amdgpu" ];
@@ -182,6 +188,7 @@ in
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
+    extraPackages = with pkgs; [ intel-media-driver ];
   };
 
   ################
