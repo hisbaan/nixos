@@ -34,6 +34,9 @@ in
 
   boot.kernelModules = [ "ip_tables" "iptable_nat" "iptable_filter" ];
 
+  # early KMS for amdgpu
+  boot.initrd.kernelModules = [ "amdgpu" ];
+
   # prevent copy fail vulnerability
   boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
   boot.extraModprobeConfig = "install algif_aead /bin/false";
@@ -162,23 +165,6 @@ in
     wireplumber.enable = true;
   };
 
-  ##########
-  # Nvidia #
-  ##########
-
-  services.xserver.videoDrivers = [ "nvidia" "nvidia-dkms" ];
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement = {
-      enable = false;
-      finegrained = false;
-    };
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-  };
-
   ############
   # Hyprland #
   ############
@@ -195,8 +181,7 @@ in
 
   hardware.graphics = {
     enable = true;
-    extraPackages = with pkgs; [ nvidia-vaapi-driver ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [ nvidia-vaapi-driver ];
+    enable32Bit = true;
   };
 
   ################
@@ -258,11 +243,7 @@ in
     NH_FLAKE = "/home/hisbaan/nixos/lab";
     KOPIA_CHECK_FOR_UPDATES = "false";
     NIXOS_OZONE_WL = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
     ZDOTDIR = "/home/hisbaan/.config/zsh/";
-    GBM_BACKEND = "nvidia-drm";
-    LIBVA_DRIVER_NAME = "nvidia";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     XDG_SESSION_TYPE = "wayland";
     PROTON_ENABLE_WAYLAND = 1;
   };
@@ -368,7 +349,6 @@ in
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.nvidia.acceptLicense = true;
 
   programs.steam = {
     enable = true;
@@ -426,7 +406,7 @@ in
     fastfetch
     nh
     nix-output-monitor
-    nvtopPackages.nvidia
+    nvtopPackages.amd
     p7zip
     pdftk
     pgcli
