@@ -238,6 +238,7 @@ in
       "scanner"
       "wheel"
       "input"
+      "i2c"
     ];
   };
 
@@ -261,6 +262,13 @@ in
   ########
 
   hardware.logitech.wireless.enable = true;
+
+  #######
+  # RGB #
+  #######
+
+  hardware.i2c.enable = true;
+  services.udev.packages = [ pkgs.openrgb ];
 
   ############
   # Services #
@@ -532,6 +540,7 @@ in
 
     # system
     efibootmgr
+    openrgb
     polkit_gnome
     pulseaudio
     shared-mime-info
