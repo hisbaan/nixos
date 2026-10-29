@@ -81,6 +81,15 @@ in
 
   networking.hostName = "lab";
 
+  # Secondary address for caddy-lan.
+  # force enable dhcp to prevent static-ip definition from disabling
+  networking.interfaces.enp6s0.useDHCP = true;
+  networking.interfaces.enp6s0.ipv4.addresses = [
+    { address = "192.168.18.251"; prefixLength = 24; }
+  ];
+
+  boot.kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
+
   # /etc/hosts
   networking.hosts = {
     "192.168.18.3" = [ "archen" ];
