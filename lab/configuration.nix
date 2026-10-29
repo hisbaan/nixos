@@ -92,7 +92,7 @@ in
 
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 81 443 4096 8080 8123 8384 11000 ];
+    allowedTCPPorts = [ 22 80 81 443 4096 7317 8080 8123 8384 11000 ];
     allowedUDPPorts = [ 5000 ];
   };
 
@@ -405,6 +405,7 @@ in
     ffmpeg
     fzf
     gnupg
+    pkgs-unstable.herdr
     htop
     jq
     killall
@@ -439,7 +440,7 @@ in
     atlas
     android-tools
     binutils
-    bun
+    pkgs-unstable.bun
     chezmoi
     claude-code
     cmake
