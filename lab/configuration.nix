@@ -5,6 +5,7 @@ let
   nub = inputs.nub.packages.${pkgs.stdenv.hostPlatform.system}.nub;
   helium = inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default;
   zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  hokum = pkgs.callPackage ./packages/hokum.nix { };
 in
 
 {
@@ -476,7 +477,7 @@ in
     digikam
     discord
     vesktop
-    dunst
+    hokum
     flameshot
     freecad
     gimp
