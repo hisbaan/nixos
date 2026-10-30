@@ -315,22 +315,6 @@ in
     };
   };
 
-  # hardware = {
-  #   sane = {
-  #     enable = true;
-  #     brscan5 = {
-  #       enable = true;
-  #       netDevices = {
-  #         brother = {
-  #           ip = "192.168.2.35";
-  #           model = "DCP-L2520DW";
-  #           # nodename = "BRW54137906D95E";
-  #         };
-  #       };
-  #     };
-  #   };
-  # };
-
   services.gvfs.enable = true;
 
   services.fstrim.enable = true;
@@ -514,7 +498,6 @@ in
     simple-scan
     solaar
     spotify
-    webcord
     zathura
     zen
 
@@ -542,7 +525,7 @@ in
     tailwindcss-language-server
     taplo
     typescript-language-server
-    pkgs-unstable.typescript-go
+    typescript
     yaml-language-server
     yamlfmt
     zls
@@ -583,7 +566,7 @@ in
     pavucontrol
     pinentry-curses
     pkgs-unstable.protontricks
-    pkgs-unstable.wineWowPackages.stable
+    pkgs-unstable.wineWow64Packages.stable
     pkgs-unstable.winetricks
 
     # FHS software
