@@ -1,0 +1,602 @@
+{ inputs, ... }:
+
+{
+  flake.modules.nixos.lab = { config, pkgs, pkgs-unstable, lib, ... }:
+
+    let
+      claude-code = inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
+      nub = inputs.nub.packages.${pkgs.stdenv.hostPlatform.system}.nub;
+      helium = inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
+      hokum = pkgs.callPackage ./_hokum.nix { };
+    in
+
+    {
+      nix.settings = {
+        experimental-features = [ "nix-command" "flakes"];
+        substituters = [
+          "https://hyprland.cachix.org"
+          "https://claude-code.cachix.org"
+        ];
+        trusted-substituters = [
+          "https://hyprland.cachix.org"
+          "https://claude-code.cachix.org"
+        ];
+        trusted-public-keys = [
+          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+          "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
+        ];
+      };
+
+      ##################
+      # Kernel Modules #
+      ##################
+
+      boot.kernelModules = [
+        "ip_tables"
+        "iptable_nat"
+        "iptable_filter"
+        # intel igpu for jellyfin transcoding
+        "i915"
+      ];
+
+      # early KMS for amdgpu
+      boot.initrd.kernelModules = [ "amdgpu" ];
+
+      # prevent copy fail vulnerability
+      boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
+      boot.extraModprobeConfig = "install algif_aead /bin/false";
+
+      ##############
+      # Bootloader #
+      ##############
+
+      boot.loader.systemd-boot.enable = lib.mkForce false;
+      boot.kernelPackages = pkgs.linuxPackages;
+      boot.loader.systemd-boot.consoleMode = "max";
+      boot.lanzaboote = {
+        enable = true;
+        pkiBundle = "/etc/secureboot";
+      };
+
+      ##########
+      # Polkit #
+      ##########
+
+      security.polkit.enable = true;
+
+      security.wrappers = {
+        kopia = {
+         capabilities = "cap_dac_read_search=+ep";
+          owner = "root";
+          group = "root";
+          source = "${pkgs.kopia}/bin/kopia";
+        };
+      };
+
+      ##############
+      # Networking #
+      ##############
+
+      networking.hostName = "lab";
+
+      # Secondary address for caddy-lan.
+      # force enable dhcp to prevent static-ip definition from disabling
+      networking.interfaces.enp6s0.useDHCP = true;
+      networking.interfaces.enp6s0.ipv4.addresses = [
+        { address = "192.168.18.251"; prefixLength = 24; }
+      ];
+
+      boot.kernel.sysctl."net.ipv4.ip_nonlocal_bind" = 1;
+
+      # /etc/hosts
+      networking.hosts = {
+        "192.168.18.3" = [ "archen" ];
+        "192.168.18.4" = [ "mini" ];
+        "192.168.18.6" = [ "affiniti" ];
+        # "192.168.2.14" = [ "knulli" ];
+        # "192.168.2.18" = [ "kobo" ];
+      };
+
+      networking.firewall = {
+        enable = true;
+        allowedTCPPorts = [ 22 80 81 443 4096 7317 8080 8123 8384 11000 ];
+        allowedUDPPorts = [ 5000 ];
+      };
+
+      services.openssh = {
+        enable = true;
+        settings = {
+          X11Forwarding = true;
+          PermitRootLogin = "no";
+          PasswordAuthentication = false;
+        };
+      };
+
+      programs.mosh.enable = true;
+
+      services.fail2ban = {
+        enable = true;
+        maxretry = 3;
+        ignoreIP = [
+          "192.168.0.0/16"
+        ];
+        bantime = "24h";
+      };
+
+      programs.wavemon.enable = true;
+
+      ##########
+      # Timers #
+      ##########
+
+      systemd.timers.backup = {
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "04:00";
+          Persistent = true;
+          AccuracySec = "5min";
+        };
+      };
+
+      systemd.services.backup = {
+        script = ''
+          /run/wrappers/bin/kopia snapshot create /mnt/nas
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          User = "hisbaan";
+        };
+      };
+
+      #############
+      # Bluetooth #
+      #############
+
+      hardware.bluetooth = {
+        enable = true;
+        powerOnBoot = true;
+        settings = {
+          General = {
+            Experimental = true;
+          };
+        };
+      };
+
+      services.upower = {
+        enable = true;
+      };
+
+      #########
+      # Audio #
+      #########
+
+      security.rtkit.enable = true;
+      services.pipewire = {
+        enable = true;
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
+        wireplumber.enable = true;
+      };
+
+      ############
+      # Hyprland #
+      ############
+
+      programs.hyprland = {
+        package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+        portalPackage = pkgs.xdg-desktop-portal-hyprland;
+        enable = true;
+        xwayland.enable = true;
+      };
+
+      programs.hyprlock.enable = true;
+      services.hypridle.enable = true;
+
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+        extraPackages = with pkgs; [ intel-media-driver ];
+      };
+
+      ################
+      # Localization #
+      ################
+
+      # Set your time zone.
+      time.timeZone = "America/Toronto";
+
+      # Select internationalisation properties.
+      i18n.defaultLocale = "en_CA.UTF-8";
+
+      i18n.extraLocaleSettings = {
+        LC_ADDRESS = "en_GB.UTF-8";
+        LC_IDENTIFICATION = "en_GB.UTF-8";
+        LC_MEASUREMENT = "en_GB.UTF-8";
+        LC_MONETARY = "en_GB.UTF-8";
+        LC_NAME = "en_GB.UTF-8";
+        LC_NUMERIC = "en_GB.UTF-8";
+        LC_PAPER = "en_GB.UTF-8";
+        LC_TELEPHONE = "en_GB.UTF-8";
+        LC_TIME = "en_GB.UTF-8";
+      };
+
+      ################
+      # Shells/Users #
+      ################
+
+      security.sudo.extraConfig = ''
+        Defaults env_reset,pwfeedback
+      '';
+
+      programs.zsh.enable = true;
+      users.defaultUserShell = pkgs.zsh;
+
+      # Define a user account. Don't forget to set a password with ‘passwd’.
+      users.users.hisbaan = {
+        useDefaultShell = true;
+        isNormalUser = true;
+        description = "Hisbaan Noorani";
+        extraGroups = [
+          "dialout"
+          "lp"
+          "networkmanager"
+          "power"
+          "scanner"
+          "wheel"
+          "input"
+          "i2c"
+        ];
+      };
+
+      # Enable automatic login for the user.
+      services.getty.autologinUser = "hisbaan";
+
+      # environment variables
+      environment.variables = {
+        EDITOR = "nvim";
+        FLAKE = "/home/hisbaan/nixos/lab";
+        NH_FLAKE = "/home/hisbaan/nixos/lab";
+        KOPIA_CHECK_FOR_UPDATES = "false";
+        NIXOS_OZONE_WL = "1";
+        ZDOTDIR = "/home/hisbaan/.config/zsh/";
+        XDG_SESSION_TYPE = "wayland";
+        PROTON_ENABLE_WAYLAND = 1;
+      };
+
+      ########
+      # UDEV #
+      ########
+
+      hardware.logitech.wireless.enable = true;
+
+      #######
+      # RGB #
+      #######
+
+      hardware.i2c.enable = true;
+      services.udev.packages = [ pkgs.openrgb ];
+
+      ############
+      # Services #
+      ############
+
+      services = {
+        syncthing = {
+          enable = true;
+          guiAddress = "0.0.0.0:8384";
+          openDefaultPorts = true;
+          user = "hisbaan";
+          dataDir = "/home/hisbaan/Documents";
+          configDir = "/home/hisbaan/.config/syncthing";
+        };
+        ddclient = {
+          enable = true;
+          usev4 = "webv4, webv4='https://cloudflare.com/cdn-cgi/trace', webv4-skip='ip='";
+          usev6 = "";
+          protocol = "cloudflare";
+          zone = "hisbaan.com";
+          username = "token";
+          passwordFile = "/home/hisbaan/services/secrets/ddclient";
+          domains = [
+            "ip.hisbaan.com"
+          ];
+        };
+        printing = {
+          enable = true;
+          drivers = [ pkgs.brlaser ];
+        };
+        avahi = {
+          enable = true;
+          nssmdns4 = true;
+          openFirewall = true;
+        };
+      };
+
+      services.gvfs.enable = true;
+
+      services.fstrim.enable = true;
+
+      programs.kdeconnect.enable = true;
+
+      # docker
+      virtualisation.docker = {
+        enable = true;
+        liveRestore = false;
+      };
+      users.extraGroups.docker.members = [ "hisbaan" ];
+
+      ##########
+      # nix-ld #
+      ##########
+
+      programs.nix-ld = {
+        enable = true;
+        libraries = with pkgs; [
+          stdenv.cc.cc.lib
+          zlib
+        ];
+      };
+
+      ############
+      # Packages #
+      ############
+
+      programs.nh = {
+        enable = true;
+        clean.enable = true;
+        clean.extraArgs = "--keep-since 4d --keep 3";
+        flake = "/home/hisbaan/nixos/lab";
+      };
+
+      programs.firefox = {
+        enable = true;
+        nativeMessagingHosts.packages = [ pkgs.tridactyl-native ];
+      };
+
+      # Allow unfree packages
+      nixpkgs.config.allowUnfree = true;
+
+      programs.steam = {
+        enable = true;
+        remotePlay.openFirewall = true;
+        dedicatedServer.openFirewall = true;
+        package = pkgs.steam.override {
+          extraPkgs = pkgs: with pkgs; [
+            keyutils
+            libkrb5
+            libpng
+            libpulseaudio
+            libvorbis
+            stdenv.cc.cc.lib
+            libxscrnsaver
+            libxcursor
+            libxi
+            libxinerama
+          ];
+        };
+      };
+      programs.gamescope.enable = true;
+
+      fonts.packages = with pkgs; [
+        meslo-lg
+        nerd-fonts.meslo-lg
+        # (nerdfonts.override { fonts = ["Meslo"]; })
+      ];
+
+      # List packages installed in system profile. To search, run: $ nix search wget
+      environment.systemPackages = with pkgs; [
+        # cli/utils
+        arp-scan
+        bat
+        bluetuith
+        btop
+        cloc
+        clipse
+        delta
+        didyoumean
+        dust
+        ergogen
+        exfatprogs
+        exiftool
+        eza
+        fd
+        ffmpeg
+        fzf
+        gnupg
+        pkgs-unstable.herdr
+        htop
+        jq
+        killall
+        kopia
+        ldns
+        miller
+        fastfetch
+        nh
+        nix-output-monitor
+        nvtopPackages.amd
+        p7zip
+        pdftk
+        pgcli
+        progress
+        ripgrep
+        rsync
+        s-tui
+        sbctl
+        starship
+        tcpdump
+        topiary
+        tmux
+        gtrash
+        unrar-wrapper
+        unzip
+        usbutils
+        wget
+        yazi
+        zip
+
+        # dev
+        atlas
+        android-tools
+        binutils
+        pkgs-unstable.bun
+        chezmoi
+        claude-code
+        cmake
+        direnv
+        gcc
+        gdb
+        git
+        gnumake
+        go
+        lua
+        pnpm
+        nodejs
+        nub
+        pkgs-unstable.opencode
+        openssl
+        overmind
+        pkgs-unstable.neovim
+        postgresql
+        python3
+        rustup
+        smartmontools
+        tree-sitter
+        uv
+        vscode
+        yaak
+        zellij
+
+        # tex
+        biber
+        texlive.combined.scheme-full
+
+        # applications
+        darktable
+        davinci-resolve
+        digikam
+        discord
+        vesktop
+        hokum
+        flameshot
+        freecad
+        gimp
+        helium
+        imv
+        kicad
+        mpv
+        nautilus
+        nemo
+        obs-studio
+        pkgs-unstable.openscad-unstable
+        pkgs-unstable.rbw
+        piper
+        protonup-ng
+        scrcpy
+        simple-scan
+        solaar
+        spotify
+        zathura
+        zen
+
+        # terminals
+        kitty
+        pkgs-unstable.alacritty
+        wezterm
+        ghostty
+
+        # language servers
+        bash-language-server
+        clang-tools
+        docker-compose-language-service
+        emmet-language-server
+        intelephense
+        jdt-language-server
+        ltex-ls
+        lua-language-server
+        nil
+        openscad-lsp
+        prettierd
+        pyright
+        (lib.hiPrio rust-analyzer-unwrapped)
+        stylua
+        tailwindcss-language-server
+        taplo
+        typescript-language-server
+        typescript
+        yaml-language-server
+        yamlfmt
+        zls
+
+        # system
+        efibootmgr
+        openrgb
+        polkit_gnome
+        pulseaudio
+        shared-mime-info
+
+        # wayland
+        grimblast
+        # hyprsome
+        libnotify
+        pkgs-unstable.waybar
+        swappy
+        swaybg
+        tofi
+        wl-clipboard
+        wl-clip-persist
+
+        # xorg
+        nitrogen
+        picom
+        polybar
+        rofi
+        sxhkd
+        xclip
+
+        # icons/themes
+        capitaine-cursors
+        adwaita-icon-theme
+        lxappearance
+
+        # misc
+        blueman
+        pavucontrol
+        pinentry-curses
+        pkgs-unstable.protontricks
+        pkgs-unstable.wineWow64Packages.stable
+        pkgs-unstable.winetricks
+
+        # FHS software
+        (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
+          pkgs.buildFHSEnv ( base // {
+            name = "fhs";
+            targetPkgs = pkgs:
+              (base.targetPkgs pkgs) ++ (with pkgs; [
+                # bambu-studio
+                # orca-slicer
+              ]);
+            profile = "export FHS=1";
+            runScript = "zsh";
+            extraOutputsToInstall = ["dev"];
+          })
+        )
+      ];
+
+      environment.etc."current-system-packages".text =
+      let
+        packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
+        sortedUnique = builtins.sort builtins.lessThan (pkgs.lib.lists.unique packages);
+        formatted = builtins.concatStringsSep "\n" sortedUnique;
+      in
+        formatted;
+
+      # This value determines the NixOS release from which the default settings for stateful
+      # data, like file locations and database versions on your system were taken. It‘s
+      # perfectly fine and recommended to leave this value at the release version of the first
+      # install of this system. Before changing this value read the documentation for this
+      # option (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+      system.stateVersion = "23.11"; # Did you read the comment?
+    };
+}
