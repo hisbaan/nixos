@@ -1,7 +1,7 @@
 { inputs, ... }:
 
 {
-  flake.modules.nixos.lab = { config, pkgs, pkgs-unstable, lib, ... }:
+  flake.modules.nixos.lab = { config, pkgs, lib, ... }:
 
     let
       claude-code = inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
@@ -355,9 +355,6 @@
         nativeMessagingHosts.packages = [ pkgs.tridactyl-native ];
       };
 
-      # Allow unfree packages
-      nixpkgs.config.allowUnfree = true;
-
       programs.steam = {
         enable = true;
         remotePlay.openFirewall = true;
@@ -405,7 +402,7 @@
         ffmpeg
         fzf
         gnupg
-        pkgs-unstable.herdr
+        pkgs.unstable.herdr
         htop
         jq
         killall
@@ -440,7 +437,7 @@
         atlas
         android-tools
         binutils
-        pkgs-unstable.bun
+        pkgs.unstable.bun
         chezmoi
         claude-code
         cmake
@@ -454,10 +451,10 @@
         pnpm
         nodejs
         nub
-        pkgs-unstable.opencode
+        pkgs.unstable.opencode
         openssl
         overmind
-        pkgs-unstable.neovim
+        pkgs.unstable.neovim
         postgresql
         python3
         rustup
@@ -489,8 +486,8 @@
         nautilus
         nemo
         obs-studio
-        pkgs-unstable.openscad-unstable
-        pkgs-unstable.rbw
+        pkgs.unstable.openscad-unstable
+        pkgs.unstable.rbw
         piper
         protonup-ng
         scrcpy
@@ -502,7 +499,7 @@
 
         # terminals
         kitty
-        pkgs-unstable.alacritty
+        pkgs.unstable.alacritty
         wezterm
         ghostty
 
@@ -540,7 +537,7 @@
         grimblast
         # hyprsome
         libnotify
-        pkgs-unstable.waybar
+        pkgs.unstable.waybar
         swappy
         swaybg
         tofi
@@ -564,9 +561,9 @@
         blueman
         pavucontrol
         pinentry-curses
-        pkgs-unstable.protontricks
-        pkgs-unstable.wineWow64Packages.stable
-        pkgs-unstable.winetricks
+        pkgs.unstable.protontricks
+        pkgs.unstable.wineWow64Packages.stable
+        pkgs.unstable.winetricks
 
         # FHS software
         (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
