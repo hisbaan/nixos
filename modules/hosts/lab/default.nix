@@ -3,10 +3,15 @@
 {
   flake.nixosConfigurations.lab = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
-    modules = [
+    modules = [ config.flake.modules.nixos.lab ];
+  };
+
+  flake.modules.nixos.lab = {
+    imports = [
       inputs.lanzaboote.nixosModules.lanzaboote
-      config.flake.modules.nixos.base
-      config.flake.modules.nixos.lab
-    ];
+    ] ++ (with config.flake.modules.nixos; [
+      base
+      user
+    ]);
   };
 }

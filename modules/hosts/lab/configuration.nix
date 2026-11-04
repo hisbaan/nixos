@@ -193,35 +193,10 @@
       # Shells/Users #
       ################
 
-      programs.zsh.enable = true;
-      users.defaultUserShell = pkgs.zsh;
-
-      # Define a user account. Don't forget to set a password with ‘passwd’.
-      users.users.hisbaan = {
-        useDefaultShell = true;
-        isNormalUser = true;
-        description = "Hisbaan Noorani";
-        extraGroups = [
-          "dialout"
-          "lp"
-          "networkmanager"
-          "power"
-          "scanner"
-          "wheel"
-          "input"
-          "i2c"
-        ];
-      };
-
-      # Enable automatic login for the user.
-      services.getty.autologinUser = "hisbaan";
-
       # environment variables
       environment.variables = {
-        EDITOR = "nvim";
         KOPIA_CHECK_FOR_UPDATES = "false";
         NIXOS_OZONE_WL = "1";
-        ZDOTDIR = "/home/hisbaan/.config/zsh/";
         XDG_SESSION_TYPE = "wayland";
         PROTON_ENABLE_WAYLAND = 1;
       };

@@ -1,3 +1,9 @@
+{ config, ... }:
+
+let
+  user = config.my.username;
+in
+
 {
   flake.modules.nixos.base = { config, pkgs, ... }: {
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -6,7 +12,7 @@
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = "/home/hisbaan/nixos/lab";
+      flake = "/home/${user}/nixos/lab";
     };
     # deprecated by nh in favour of NH_FLAKE (set by programs.nh.flake)
     environment.variables.FLAKE = config.programs.nh.flake;
