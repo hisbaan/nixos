@@ -25,6 +25,8 @@ in
       ];
     };
 
+    services.fstrim.enable = true;
+
     environment.systemPackages = with pkgs; [
       nh
       nix-output-monitor

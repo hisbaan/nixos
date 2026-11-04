@@ -1,3 +1,5 @@
+{ self, ... }:
+
 {
   flake.modules.nixos.wayland = { pkgs, ... }: {
     environment.variables = {
@@ -15,6 +17,9 @@
       tofi
       wl-clipboard
       wl-clip-persist
+
+      # notifications, sound and bluetooth control center
+      self.packages.${pkgs.stdenv.hostPlatform.system}.hokum
     ];
   };
 }
