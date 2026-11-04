@@ -18,6 +18,11 @@
       audio
       bluetooth
 
+      cli
+      dev
+      lsp
+      tex
+
       ssh-server
       syncthing
       backup

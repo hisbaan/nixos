@@ -1,0 +1,51 @@
+{
+  flake.modules.nixos.cli = { pkgs, ... }: {
+    programs.wavemon.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      arp-scan
+      bat
+      btop
+      cloc
+      clipse
+      delta
+      didyoumean
+      dust
+      ergogen
+      exfatprogs
+      exiftool
+      eza
+      fd
+      ffmpeg
+      fzf
+      gnupg
+      unstable.herdr
+      htop
+      jq
+      killall
+      ldns
+      miller
+      fastfetch
+      p7zip
+      pdftk
+      pgcli
+      progress
+      ripgrep
+      rsync
+      s-tui
+      starship
+      tcpdump
+      topiary
+      tmux
+      gtrash
+      unrar-wrapper
+      unzip
+      usbutils
+      wget
+      yazi
+      zip
+      pinentry-curses
+      unstable.rbw
+    ];
+  };
+}

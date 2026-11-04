@@ -4,25 +4,12 @@
   flake.modules.nixos.lab = { config, pkgs, lib, ... }:
 
     let
-      claude-code = inputs.claude-code.packages.${pkgs.stdenv.hostPlatform.system}.claude-code;
-      nub = inputs.nub.packages.${pkgs.stdenv.hostPlatform.system}.nub;
       helium = inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default;
       zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
       hokum = pkgs.callPackage ./_hokum.nix { };
     in
 
     {
-      nix.settings = {
-        substituters = [
-          "https://claude-code.cachix.org"
-        ];
-        trusted-substituters = [
-          "https://claude-code.cachix.org"
-        ];
-        trusted-public-keys = [
-          "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
-        ];
-      };
 
       ##################
       # Kernel Modules #
@@ -70,8 +57,6 @@
         allowedTCPPorts = [ 80 81 443 4096 7317 8080 8123 11000 ];
         allowedUDPPorts = [ 5000 ];
       };
-
-      programs.wavemon.enable = true;
 
       # intel igpu for jellyfin transcoding
       hardware.graphics.extraPackages = with pkgs; [ intel-media-driver ];
@@ -136,86 +121,6 @@
 
       # List packages installed in system profile. To search, run: $ nix search wget
       environment.systemPackages = with pkgs; [
-        # cli/utils
-        arp-scan
-        bat
-        btop
-        cloc
-        clipse
-        delta
-        didyoumean
-        dust
-        ergogen
-        exfatprogs
-        exiftool
-        eza
-        fd
-        ffmpeg
-        fzf
-        gnupg
-        pkgs.unstable.herdr
-        htop
-        jq
-        killall
-        ldns
-        miller
-        fastfetch
-        nvtopPackages.amd
-        p7zip
-        pdftk
-        pgcli
-        progress
-        ripgrep
-        rsync
-        s-tui
-        starship
-        tcpdump
-        topiary
-        tmux
-        gtrash
-        unrar-wrapper
-        unzip
-        usbutils
-        wget
-        yazi
-        zip
-
-        # dev
-        atlas
-        android-tools
-        binutils
-        pkgs.unstable.bun
-        chezmoi
-        claude-code
-        cmake
-        direnv
-        gcc
-        gdb
-        git
-        gnumake
-        go
-        lua
-        pnpm
-        nodejs
-        nub
-        pkgs.unstable.opencode
-        openssl
-        overmind
-        pkgs.unstable.neovim
-        postgresql
-        python3
-        rustup
-        smartmontools
-        tree-sitter
-        uv
-        vscode
-        yaak
-        zellij
-
-        # tex
-        biber
-        texlive.combined.scheme-full
-
         # applications
         darktable
         davinci-resolve
@@ -232,7 +137,6 @@
         mpv
         obs-studio
         pkgs.unstable.openscad-unstable
-        pkgs.unstable.rbw
         piper
         protonup-ng
         scrcpy
@@ -241,52 +145,16 @@
         zathura
         zen
 
-        # language servers
-        bash-language-server
-        clang-tools
-        docker-compose-language-service
-        emmet-language-server
-        intelephense
-        jdt-language-server
-        ltex-ls
-        lua-language-server
-        nil
-        openscad-lsp
-        prettierd
-        pyright
-        (lib.hiPrio rust-analyzer-unwrapped)
-        stylua
-        tailwindcss-language-server
-        taplo
-        typescript-language-server
-        typescript
-        yaml-language-server
-        yamlfmt
-        zls
+        nvtopPackages.amd
 
         # system
         openrgb
 
         # misc
-        pinentry-curses
         pkgs.unstable.protontricks
         pkgs.unstable.wineWow64Packages.stable
         pkgs.unstable.winetricks
 
-        # FHS software
-        (let base = pkgs.appimageTools.defaultFhsEnvArgs; in
-          pkgs.buildFHSEnv ( base // {
-            name = "fhs";
-            targetPkgs = pkgs:
-              (base.targetPkgs pkgs) ++ (with pkgs; [
-                # bambu-studio
-                # orca-slicer
-              ]);
-            profile = "export FHS=1";
-            runScript = "zsh";
-            extraOutputsToInstall = ["dev"];
-          })
-        )
       ];
 
       # This value determines the NixOS release from which the default settings for stateful
