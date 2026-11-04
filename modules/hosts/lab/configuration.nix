@@ -4,8 +4,6 @@
   flake.modules.nixos.lab = { config, pkgs, lib, ... }:
 
     let
-      helium = inputs.helium.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      zen = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
       hokum = pkgs.callPackage ./_hokum.nix { };
     in
 
@@ -67,21 +65,7 @@
 
       # environment variables
       environment.variables = {
-        PROTON_ENABLE_WAYLAND = 1;
       };
-
-      ########
-      # UDEV #
-      ########
-
-      hardware.logitech.wireless.enable = true;
-
-      #######
-      # RGB #
-      #######
-
-      hardware.i2c.enable = true;
-      services.udev.packages = [ pkgs.openrgb ];
 
       ############
       # Services #
@@ -93,68 +77,10 @@
       # Packages #
       ############
 
-      programs.firefox = {
-        enable = true;
-        nativeMessagingHosts.packages = [ pkgs.tridactyl-native ];
-      };
-
-      programs.steam = {
-        enable = true;
-        remotePlay.openFirewall = true;
-        dedicatedServer.openFirewall = true;
-        package = pkgs.steam.override {
-          extraPkgs = pkgs: with pkgs; [
-            keyutils
-            libkrb5
-            libpng
-            libpulseaudio
-            libvorbis
-            stdenv.cc.cc.lib
-            libxscrnsaver
-            libxcursor
-            libxi
-            libxinerama
-          ];
-        };
-      };
-      programs.gamescope.enable = true;
-
       # List packages installed in system profile. To search, run: $ nix search wget
       environment.systemPackages = with pkgs; [
-        # applications
-        darktable
-        davinci-resolve
-        digikam
-        discord
-        vesktop
         hokum
-        flameshot
-        freecad
-        gimp
-        helium
-        imv
-        kicad
-        mpv
-        obs-studio
-        pkgs.unstable.openscad-unstable
-        piper
-        protonup-ng
-        scrcpy
-        solaar
-        spotify
-        zathura
-        zen
-
         nvtopPackages.amd
-
-        # system
-        openrgb
-
-        # misc
-        pkgs.unstable.protontricks
-        pkgs.unstable.wineWow64Packages.stable
-        pkgs.unstable.winetricks
-
       ];
 
       # This value determines the NixOS release from which the default settings for stateful

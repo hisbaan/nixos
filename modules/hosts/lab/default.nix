@@ -23,12 +23,20 @@
       lsp
       tex
 
+      browsers
+      creative
+      gaming
+      apps
+
       ssh-server
       syncthing
       backup
       ddclient
       printing
       docker
+
+      rgb
+      logitech
     ];
   };
 }

@@ -19,7 +19,6 @@ in
         "power"
         "wheel"
         "input"
-        "i2c"
       ];
     };
 
