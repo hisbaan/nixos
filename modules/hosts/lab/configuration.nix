@@ -39,26 +39,7 @@
       # early KMS for amdgpu
       boot.initrd.kernelModules = [ "amdgpu" ];
 
-      ##############
-      # Bootloader #
-      ##############
-
-      boot.loader.systemd-boot.enable = lib.mkForce false;
       boot.kernelPackages = pkgs.linuxPackages;
-      boot.loader.systemd-boot.consoleMode = "max";
-      boot.lanzaboote = {
-        enable = true;
-        pkiBundle = "/etc/secureboot";
-      };
-
-      security.wrappers = {
-        kopia = {
-         capabilities = "cap_dac_read_search=+ep";
-          owner = "root";
-          group = "root";
-          source = "${pkgs.kopia}/bin/kopia";
-        };
-      };
 
       ##############
       # Networking #
@@ -86,54 +67,11 @@
 
       networking.firewall = {
         enable = true;
-        allowedTCPPorts = [ 22 80 81 443 4096 7317 8080 8123 8384 11000 ];
+        allowedTCPPorts = [ 80 81 443 4096 7317 8080 8123 11000 ];
         allowedUDPPorts = [ 5000 ];
       };
 
-      services.openssh = {
-        enable = true;
-        settings = {
-          X11Forwarding = true;
-          PermitRootLogin = "no";
-          PasswordAuthentication = false;
-        };
-      };
-
-      programs.mosh.enable = true;
-
-      services.fail2ban = {
-        enable = true;
-        maxretry = 3;
-        ignoreIP = [
-          "192.168.0.0/16"
-        ];
-        bantime = "24h";
-      };
-
       programs.wavemon.enable = true;
-
-      ##########
-      # Timers #
-      ##########
-
-      systemd.timers.backup = {
-        wantedBy = [ "timers.target" ];
-        timerConfig = {
-          OnCalendar = "04:00";
-          Persistent = true;
-          AccuracySec = "5min";
-        };
-      };
-
-      systemd.services.backup = {
-        script = ''
-          /run/wrappers/bin/kopia snapshot create /mnt/nas
-        '';
-        serviceConfig = {
-          Type = "oneshot";
-          User = "hisbaan";
-        };
-      };
 
       # intel igpu for jellyfin transcoding
       hardware.graphics.extraPackages = with pkgs; [ intel-media-driver ];
@@ -144,7 +82,6 @@
 
       # environment variables
       environment.variables = {
-        KOPIA_CHECK_FOR_UPDATES = "false";
         PROTON_ENABLE_WAYLAND = 1;
       };
 
@@ -165,46 +102,7 @@
       # Services #
       ############
 
-      services = {
-        syncthing = {
-          enable = true;
-          guiAddress = "0.0.0.0:8384";
-          openDefaultPorts = true;
-          user = "hisbaan";
-          dataDir = "/home/hisbaan/Documents";
-          configDir = "/home/hisbaan/.config/syncthing";
-        };
-        ddclient = {
-          enable = true;
-          usev4 = "webv4, webv4='https://cloudflare.com/cdn-cgi/trace', webv4-skip='ip='";
-          usev6 = "";
-          protocol = "cloudflare";
-          zone = "hisbaan.com";
-          username = "token";
-          passwordFile = "/home/hisbaan/services/secrets/ddclient";
-          domains = [
-            "ip.hisbaan.com"
-          ];
-        };
-        printing = {
-          enable = true;
-          drivers = [ pkgs.brlaser ];
-        };
-        avahi = {
-          enable = true;
-          nssmdns4 = true;
-          openFirewall = true;
-        };
-      };
-
       services.fstrim.enable = true;
-
-      # docker
-      virtualisation.docker = {
-        enable = true;
-        liveRestore = false;
-      };
-      users.extraGroups.docker.members = [ "hisbaan" ];
 
       ############
       # Packages #
@@ -259,7 +157,6 @@
         htop
         jq
         killall
-        kopia
         ldns
         miller
         fastfetch
@@ -271,7 +168,6 @@
         ripgrep
         rsync
         s-tui
-        sbctl
         starship
         tcpdump
         topiary
@@ -340,7 +236,6 @@
         piper
         protonup-ng
         scrcpy
-        simple-scan
         solaar
         spotify
         zathura
@@ -370,7 +265,6 @@
         zls
 
         # system
-        efibootmgr
         openrgb
 
         # misc

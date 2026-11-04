@@ -15,10 +15,8 @@ in
       description = "Hisbaan Noorani";
       extraGroups = [
         "dialout"
-        "lp"
         "networkmanager"
         "power"
-        "scanner"
         "wheel"
         "input"
         "i2c"

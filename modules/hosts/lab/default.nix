@@ -7,17 +7,23 @@
   };
 
   flake.modules.nixos.lab = {
-    imports = [
-      inputs.lanzaboote.nixosModules.lanzaboote
-    ] ++ (with config.flake.modules.nixos; [
+    imports = with config.flake.modules.nixos; [
       base
       user
+      secure-boot
 
       desktop
       hyprland
       xorg
       audio
       bluetooth
-    ]);
+
+      ssh-server
+      syncthing
+      backup
+      ddclient
+      printing
+      docker
+    ];
   };
 }
