@@ -12,7 +12,7 @@ in
       enable = true;
       clean.enable = true;
       clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = "/home/${user}/nixos/lab";
+      flake = "/home/${user}/nixos";
     };
     # deprecated by nh in favour of NH_FLAKE (set by programs.nh.flake)
     environment.variables.FLAKE = config.programs.nh.flake;
