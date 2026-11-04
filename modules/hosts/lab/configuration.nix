@@ -13,7 +13,6 @@
 
     {
       nix.settings = {
-        experimental-features = [ "nix-command" "flakes"];
         substituters = [
           "https://hyprland.cachix.org"
           "https://claude-code.cachix.org"
@@ -43,10 +42,6 @@
       # early KMS for amdgpu
       boot.initrd.kernelModules = [ "amdgpu" ];
 
-      # prevent copy fail vulnerability
-      boot.blacklistedKernelModules = [ "af_alg" "algif_hash" "algif_skcipher" "algif_rng" "algif_aead" ];
-      boot.extraModprobeConfig = "install algif_aead /bin/false";
-
       ##############
       # Bootloader #
       ##############
@@ -58,12 +53,6 @@
         enable = true;
         pkiBundle = "/etc/secureboot";
       };
-
-      ##########
-      # Polkit #
-      ##########
-
-      security.polkit.enable = true;
 
       security.wrappers = {
         kopia = {
@@ -201,34 +190,8 @@
       };
 
       ################
-      # Localization #
-      ################
-
-      # Set your time zone.
-      time.timeZone = "America/Toronto";
-
-      # Select internationalisation properties.
-      i18n.defaultLocale = "en_CA.UTF-8";
-
-      i18n.extraLocaleSettings = {
-        LC_ADDRESS = "en_GB.UTF-8";
-        LC_IDENTIFICATION = "en_GB.UTF-8";
-        LC_MEASUREMENT = "en_GB.UTF-8";
-        LC_MONETARY = "en_GB.UTF-8";
-        LC_NAME = "en_GB.UTF-8";
-        LC_NUMERIC = "en_GB.UTF-8";
-        LC_PAPER = "en_GB.UTF-8";
-        LC_TELEPHONE = "en_GB.UTF-8";
-        LC_TIME = "en_GB.UTF-8";
-      };
-
-      ################
       # Shells/Users #
       ################
-
-      security.sudo.extraConfig = ''
-        Defaults env_reset,pwfeedback
-      '';
 
       programs.zsh.enable = true;
       users.defaultUserShell = pkgs.zsh;
@@ -256,8 +219,6 @@
       # environment variables
       environment.variables = {
         EDITOR = "nvim";
-        FLAKE = "/home/hisbaan/nixos/lab";
-        NH_FLAKE = "/home/hisbaan/nixos/lab";
         KOPIA_CHECK_FOR_UPDATES = "false";
         NIXOS_OZONE_WL = "1";
         ZDOTDIR = "/home/hisbaan/.config/zsh/";
@@ -327,28 +288,9 @@
       };
       users.extraGroups.docker.members = [ "hisbaan" ];
 
-      ##########
-      # nix-ld #
-      ##########
-
-      programs.nix-ld = {
-        enable = true;
-        libraries = with pkgs; [
-          stdenv.cc.cc.lib
-          zlib
-        ];
-      };
-
       ############
       # Packages #
       ############
-
-      programs.nh = {
-        enable = true;
-        clean.enable = true;
-        clean.extraArgs = "--keep-since 4d --keep 3";
-        flake = "/home/hisbaan/nixos/lab";
-      };
 
       programs.firefox = {
         enable = true;
@@ -410,8 +352,6 @@
         ldns
         miller
         fastfetch
-        nh
-        nix-output-monitor
         nvtopPackages.amd
         p7zip
         pdftk
@@ -580,14 +520,6 @@
           })
         )
       ];
-
-      environment.etc."current-system-packages".text =
-      let
-        packages = builtins.map (p: "${p.name}") config.environment.systemPackages;
-        sortedUnique = builtins.sort builtins.lessThan (pkgs.lib.lists.unique packages);
-        formatted = builtins.concatStringsSep "\n" sortedUnique;
-      in
-        formatted;
 
       # This value determines the NixOS release from which the default settings for stateful
       # data, like file locations and database versions on your system were taken. It‘s
