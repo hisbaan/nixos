@@ -12,6 +12,12 @@
     ] ++ (with config.flake.modules.nixos; [
       base
       user
+
+      desktop
+      hyprland
+      xorg
+      audio
+      bluetooth
     ]);
   };
 }

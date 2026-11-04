@@ -14,15 +14,12 @@
     {
       nix.settings = {
         substituters = [
-          "https://hyprland.cachix.org"
           "https://claude-code.cachix.org"
         ];
         trusted-substituters = [
-          "https://hyprland.cachix.org"
           "https://claude-code.cachix.org"
         ];
         trusted-public-keys = [
-          "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
           "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
         ];
       };
@@ -138,56 +135,8 @@
         };
       };
 
-      #############
-      # Bluetooth #
-      #############
-
-      hardware.bluetooth = {
-        enable = true;
-        powerOnBoot = true;
-        settings = {
-          General = {
-            Experimental = true;
-          };
-        };
-      };
-
-      services.upower = {
-        enable = true;
-      };
-
-      #########
-      # Audio #
-      #########
-
-      security.rtkit.enable = true;
-      services.pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        wireplumber.enable = true;
-      };
-
-      ############
-      # Hyprland #
-      ############
-
-      programs.hyprland = {
-        package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-        portalPackage = pkgs.xdg-desktop-portal-hyprland;
-        enable = true;
-        xwayland.enable = true;
-      };
-
-      programs.hyprlock.enable = true;
-      services.hypridle.enable = true;
-
-      hardware.graphics = {
-        enable = true;
-        enable32Bit = true;
-        extraPackages = with pkgs; [ intel-media-driver ];
-      };
+      # intel igpu for jellyfin transcoding
+      hardware.graphics.extraPackages = with pkgs; [ intel-media-driver ];
 
       ################
       # Shells/Users #
@@ -196,8 +145,6 @@
       # environment variables
       environment.variables = {
         KOPIA_CHECK_FOR_UPDATES = "false";
-        NIXOS_OZONE_WL = "1";
-        XDG_SESSION_TYPE = "wayland";
         PROTON_ENABLE_WAYLAND = 1;
       };
 
@@ -250,11 +197,7 @@
         };
       };
 
-      services.gvfs.enable = true;
-
       services.fstrim.enable = true;
-
-      programs.kdeconnect.enable = true;
 
       # docker
       virtualisation.docker = {
@@ -293,18 +236,11 @@
       };
       programs.gamescope.enable = true;
 
-      fonts.packages = with pkgs; [
-        meslo-lg
-        nerd-fonts.meslo-lg
-        # (nerdfonts.override { fonts = ["Meslo"]; })
-      ];
-
       # List packages installed in system profile. To search, run: $ nix search wget
       environment.systemPackages = with pkgs; [
         # cli/utils
         arp-scan
         bat
-        bluetuith
         btop
         cloc
         clipse
@@ -398,8 +334,6 @@
         imv
         kicad
         mpv
-        nautilus
-        nemo
         obs-studio
         pkgs.unstable.openscad-unstable
         pkgs.unstable.rbw
@@ -411,12 +345,6 @@
         spotify
         zathura
         zen
-
-        # terminals
-        kitty
-        pkgs.unstable.alacritty
-        wezterm
-        ghostty
 
         # language servers
         bash-language-server
@@ -444,37 +372,8 @@
         # system
         efibootmgr
         openrgb
-        polkit_gnome
-        pulseaudio
-        shared-mime-info
-
-        # wayland
-        grimblast
-        # hyprsome
-        libnotify
-        pkgs.unstable.waybar
-        swappy
-        swaybg
-        tofi
-        wl-clipboard
-        wl-clip-persist
-
-        # xorg
-        nitrogen
-        picom
-        polybar
-        rofi
-        sxhkd
-        xclip
-
-        # icons/themes
-        capitaine-cursors
-        adwaita-icon-theme
-        lxappearance
 
         # misc
-        blueman
-        pavucontrol
         pinentry-curses
         pkgs.unstable.protontricks
         pkgs.unstable.wineWow64Packages.stable
