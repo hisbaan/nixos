@@ -49,7 +49,6 @@
       # "192.168.2.18" = [ "kobo" ];
     };
 
-    # ssh and syncthing open their own ports; these are for the docker services
     networking.firewall = {
       enable = true;
       allowedTCPPorts = [ 80 81 443 4096 7317 8080 8123 11000 ];
