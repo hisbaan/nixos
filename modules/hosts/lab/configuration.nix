@@ -7,8 +7,6 @@
     # Hardware #
     ############
 
-    boot.kernelPackages = pkgs.linuxPackages;
-
     boot.kernelModules = [
       "ip_tables"
       "iptable_nat"
@@ -50,7 +48,6 @@
     };
 
     networking.firewall = {
-      enable = true;
       allowedTCPPorts = [ 80 81 443 4096 7317 8080 8123 11000 ];
       allowedUDPPorts = [ 5000 ];
     };

@@ -8,7 +8,6 @@
         PasswordAuthentication = false;
       };
     };
-    networking.firewall.allowedTCPPorts = [ 22 ];
 
     programs.mosh.enable = true;
 
