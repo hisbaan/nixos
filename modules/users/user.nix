@@ -15,8 +15,6 @@ in
       description = "Hisbaan Noorani";
       extraGroups = [
         "dialout"
-        "networkmanager"
-        "power"
         "wheel"
         "input"
       ];

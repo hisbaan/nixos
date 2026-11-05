@@ -33,7 +33,6 @@
       lxappearance
 
       # system
-      polkit_gnome
       shared-mime-info
     ];
   };

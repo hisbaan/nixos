@@ -13,7 +13,6 @@
 
       desktop
       hyprland
-      xorg
       audio
       bluetooth
 
