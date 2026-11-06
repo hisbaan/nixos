@@ -32,6 +32,7 @@
       ddclient
       printing
       docker
+      t3code
 
       rgb
       logitech
