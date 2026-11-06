@@ -16,8 +16,6 @@ in
       openFirewall = true;
     };
 
-    users.users.${user}.extraGroups = [ "lp" "scanner" ];
-
-    environment.systemPackages = [ pkgs.simple-scan ];
+    users.users.${user}.extraGroups = [ "lp" ];
   };
 }
