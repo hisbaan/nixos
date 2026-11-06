@@ -10,6 +10,6 @@ in
       enable = true;
       liveRestore = false;
     };
-    users.extraGroups.docker.members = [ user ];
+    users.users.${user}.extraGroups = [ "docker" ];
   };
 }
