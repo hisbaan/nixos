@@ -9,7 +9,7 @@ in
   flake.modules.nixos.backup = { pkgs, ... }: {
     security.wrappers = {
       kopia = {
-       capabilities = "cap_dac_read_search=+ep";
+        capabilities = "cap_dac_read_search=+ep";
         owner = "root";
         group = "root";
         source = "${pkgs.kopia}/bin/kopia";
