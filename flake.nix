@@ -29,6 +29,10 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    hokum = {
+      url = "github:anomalyco/hokum";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   # Every .nix file under ./modules is a flake-parts module (paths starting with `_` are skipped).

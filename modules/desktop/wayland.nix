@@ -1,4 +1,4 @@
-{ self, ... }:
+{ inputs, ... }:
 
 {
   flake.modules.nixos.wayland = { pkgs, ... }: {
@@ -19,7 +19,7 @@
       wl-clip-persist
 
       # notifications, sound and bluetooth control center
-      self.packages.${pkgs.stdenv.hostPlatform.system}.hokum
+      inputs.hokum.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
   };
 }
